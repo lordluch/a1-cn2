@@ -26,7 +26,9 @@ export function CustomerEditModal({ customer, isOpen, onClose, onSuccess }: Cust
       neighborhood: '',
       city: '',
       state: '',
+      zipCode: '',
     },
+    driverLicense: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -45,7 +47,9 @@ export function CustomerEditModal({ customer, isOpen, onClose, onSuccess }: Cust
           neighborhood: customer.address.neighborhood,
           city: customer.address.city,
           state: customer.address.state,
+          zipCode: customer.address.zipCode,
         },
+        driverLicense: customer.driverLicense,
       });
     }
   }, [customer]);
@@ -159,6 +163,22 @@ export function CustomerEditModal({ customer, isOpen, onClose, onSuccess }: Cust
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
+
+          <div>
+            <label htmlFor="driverLicense" className="block text-sm font-medium text-gray-700">
+              CNH *
+            </label>
+            <input
+              type="text"
+              id="driverLicense"
+              name="driverLicense"
+              value={formData.driverLicense}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            />
+          </div>
+
         </div>
 
         {/* Address */}

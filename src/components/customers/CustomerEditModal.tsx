@@ -29,6 +29,7 @@ export function CustomerEditModal({ customer, isOpen, onClose, onSuccess }: Cust
       zipCode: '',
     },
     driverLicense: '',
+    driverLicenseExpiry: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -50,6 +51,9 @@ export function CustomerEditModal({ customer, isOpen, onClose, onSuccess }: Cust
           zipCode: customer.address.zipCode,
         },
         driverLicense: customer.driverLicense,
+        driverLicenseExpiry: customer.driverLicenseExpiry instanceof Date 
+          ? customer.driverLicenseExpiry.toISOString().split('T')[0]
+          : new Date(customer.driverLicenseExpiry).toISOString().split('T')[0],
       });
     }
   }, [customer]);
@@ -62,7 +66,12 @@ export function CustomerEditModal({ customer, isOpen, onClose, onSuccess }: Cust
     setError('');
 
     try {
-      await customerApi.update(customer.id, formData);
+      const updatedData = {
+        ...formData,
+        driverLicenseExpiry: new Date(formData.driverLicenseExpiry),
+      };
+      
+      await customerApi.update(customer.id, updatedData);
       onSuccess();
       onClose();
     } catch (err) {
@@ -179,6 +188,20 @@ export function CustomerEditModal({ customer, isOpen, onClose, onSuccess }: Cust
             />
           </div>
 
+          <div>
+            <label htmlFor="driverLicenseExpiry" className="block text-sm font-medium text-gray-700">
+              Vencimento CNH *
+            </label>
+            <input
+              type="date"
+              id="driverLicenseExpiry"
+              name="driverLicenseExpiry"
+              value={formData.driverLicenseExpiry}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            />
+          </div>
         </div>
 
         {/* Address */}
@@ -268,6 +291,21 @@ export function CustomerEditModal({ customer, isOpen, onClose, onSuccess }: Cust
                 id="address.state"
                 name="address.state"
                 value={formData.address.state}
+                onChange={handleChange}
+                required
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="address.zipCode" className="block text-sm font-medium text-gray-700">
+                CEP *
+              </label>
+              <input
+                type="text"
+                id="address.zipCode"
+                name="address.zipCode"
+                value={formData.address.zipCode}
                 onChange={handleChange}
                 required
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
